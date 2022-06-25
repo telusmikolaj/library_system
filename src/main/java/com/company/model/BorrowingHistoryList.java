@@ -13,4 +13,10 @@ public class BorrowingHistoryList {
     public void add(BorrowingHistory borrowingHistoryRecord) {
         borrowingHistoryList.add(borrowingHistoryRecord);
     }
+
+    public List<BorrowingHistory> getBorrowingHistoryList() {
+        return borrowingHistoryList;
+    }
+
+
 }

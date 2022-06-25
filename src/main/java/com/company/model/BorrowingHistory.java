@@ -3,8 +3,6 @@ package com.company.model;
 import javax.xml.bind.annotation.*;
 import java.util.Date;
 
-@XmlRootElement(name="borrowingHistory")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class BorrowingHistory {
 
     private int id;
@@ -37,7 +35,6 @@ public class BorrowingHistory {
         return id;
     }
 
-    @XmlAttribute(name="id")
     public void setId(int id) {
         this.id = id;
     }
@@ -46,7 +43,6 @@ public class BorrowingHistory {
         return userId;
     }
 
-    @XmlAttribute(name= "user_id")
     public void setUserId(int userId) {
         this.userId = userId;
     }
@@ -55,7 +51,6 @@ public class BorrowingHistory {
         return bookId;
     }
 
-    @XmlAttribute(name = "book_id")
     public void setBookId(int bookId) {
         this.bookId = bookId;
     }
@@ -64,7 +59,6 @@ public class BorrowingHistory {
         return borrowDate;
     }
 
-    @XmlAttribute(name = "borrow_date")
     public void setBorrowDate(String borrowDate) {
         this.borrowDate = borrowDate;
     }
@@ -73,7 +67,6 @@ public class BorrowingHistory {
         return returnDate;
     }
 
-    @XmlAttribute(name = "return_date")
     public void setReturnDate(String returnDate) {
         this.returnDate = returnDate;
     }

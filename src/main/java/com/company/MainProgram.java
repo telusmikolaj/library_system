@@ -12,11 +12,9 @@ import com.company.view.UserTableModel;
 import com.thoughtworks.xstream.XStream;
 
 import javax.swing.*;
-import javax.xml.bind.*;
 import javax.xml.bind.annotation.XmlElement;
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.XMLEncoder;
 import java.io.*;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -126,12 +124,12 @@ public class MainProgram extends JFrame {
     private JButton updateLibrarianButton;
     private JPanel updateLibrarianFormPanel;
     private JButton exportToXMLButton;
+    private JButton loadBorrowingHistoryFromXMLBTN;
 
     private List<User> usersList;
     private List<Book> bookList;
     private List<Librarian> librariansList;
 
-    @XmlElement(name = "borrowingHistory")
     private List<BorrowingHistory> borrowingHistoryList;
 
     public MainProgram() throws SQLException {
@@ -669,6 +667,26 @@ public class MainProgram extends JFrame {
                 }
             }
         });
+        loadBorrowingHistoryFromXMLBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                JFileChooser jfc = new JFileChooser("/Users/mikolajtelus/Documents/Java/CRUD2/src/com/company");
+                int userChoice = jfc.showOpenDialog(rootPanel);
+                if (userChoice == JFileChooser.APPROVE_OPTION)
+                {
+                    File selectedFile = jfc.getSelectedFile();
+                    try {
+                        readBorrowingHistoryFromXML(selectedFile);
+                    } catch (IOException | SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                if (userChoice == JFileChooser.CANCEL_OPTION)
+                    System.out.println("No file selected");
+
+            }
+        });
     }
 
     public Book getSelectedBook() {
@@ -766,6 +784,21 @@ public class MainProgram extends JFrame {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void readBorrowingHistoryFromXML(File file) throws IOException, SQLException {
+        System.out.println(file.toString());
+        XStream xstream = new XStream();
+        xstream.alias("borrowingHistory", BorrowingHistory.class);
+        xstream.alias("borrowingHistoryList", BorrowingHistoryList.class);
+        xstream.addImplicitCollection(BorrowingHistoryList.class, "borrowingHistoryList", BorrowingHistory.class);
+        xstream.allowTypes(new Class[] {com.company.model.BorrowingHistory.class});
+
+         List<BorrowingHistory> borrowingHistoryListFromXML = (List<BorrowingHistory>) xstream.fromXML(file);
+         for (BorrowingHistory borrowingHistoryRecord : borrowingHistoryListFromXML) {
+             BorrowingHistoryService.addRecordToBorrowingHistory(borrowingHistoryRecord);
+         }
+         loadBorrowingHistoryTable();
     }
 
 
