@@ -2,12 +2,14 @@ package com.company;
 
 import com.company.model.Book;
 import com.company.model.BorrowingHistory;
+import com.company.model.BorrowingHistoryList;
 import com.company.model.User;
 import com.company.service.*;
 import com.company.view.BookTableModel;
 import com.company.view.BorrowingHistoryTableModel;
 import com.company.view.LibrarianTableModel;
 import com.company.view.UserTableModel;
+import com.thoughtworks.xstream.XStream;
 
 import javax.swing.*;
 import javax.xml.bind.*;
@@ -638,21 +640,33 @@ public class MainProgram extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e)  {
 
-                try {
-                    JAXBContext context = JAXBContext.newInstance(BorrowingHistory.class);
-                    Marshaller marshaller = context.createMarshaller();
+                XStream xstream = new XStream();
+                xstream.alias("borrowingHistory", BorrowingHistory.class);
+                xstream.alias("borrowingHistoryList", BorrowingHistoryList.class);
+                xstream.addImplicitCollection(BorrowingHistoryList.class, "borrowingHistoryList");
 
-                    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                    File file = new File("book.xml");
+                String xml = xstream.toXML(borrowingHistoryList);
+
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("Specify a file save");
+                int userSelection = fileChooser.showSaveDialog(rootPanel);
+                if(userSelection == JFileChooser.APPROVE_OPTION){
+                    File fileToSave = fileChooser.getSelectedFile();
+
+                    try {
+                        FileWriter fw = new FileWriter(fileToSave);
+                        BufferedWriter bw = new BufferedWriter(fw);
+
+                        bw.write(xml);
+                        JOptionPane.showMessageDialog(rootPanel, "SUCCESSFULLY LOADED","INFORMATION",JOptionPane.INFORMATION_MESSAGE);
+                        bw.close();
+                        fw.close();
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(rootPanel, "ERROR","ERROR MESSAGE",JOptionPane.ERROR_MESSAGE);
+                    }
 
 
-                    marshaller.marshal(borrowingHistoryList, System.out);
-
-                } catch (JAXBException e1) {
-                    e1.printStackTrace();
                 }
-
-
             }
         });
     }
