@@ -12,7 +12,7 @@ import com.company.view.UserTableModel;
 import com.thoughtworks.xstream.XStream;
 
 import javax.swing.*;
-import javax.xml.bind.annotation.XmlElement;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -125,6 +125,7 @@ public class MainProgram extends JFrame {
     private JPanel updateLibrarianFormPanel;
     private JButton exportToXMLButton;
     private JButton loadBorrowingHistoryFromXMLBTN;
+    private JButton exportBorrowingHistoryToHTML;
 
     private List<User> usersList;
     private List<Book> bookList;
@@ -137,6 +138,7 @@ public class MainProgram extends JFrame {
         System.out.println(adminCardsPanel);
 
 
+        System.out.println(borrowingHistoryTable.toString());
         loadLibrariansTable();
         loadUserTable();
         loadAllBooks();
@@ -687,6 +689,18 @@ public class MainProgram extends JFrame {
 
             }
         });
+
+
+        exportBorrowingHistoryToHTML.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    saveBorrowingHistoryAsHTML();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     public Book getSelectedBook() {
@@ -784,6 +798,37 @@ public class MainProgram extends JFrame {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void saveBorrowingHistoryAsHTML() throws IOException {
+        FileWriter html = new FileWriter("table.html");
+        TableModel model = borrowingHistoryTable.getModel();
+
+        html.write("<html> <head><meta charset=\"utf-8\"></head><style>\n"
+                + "th, td {"
+                + "    font-size: 12pt;"
+                + "}"
+                + "</style><table border=\"1\"><tr>");
+
+        for (int i = 0; i < borrowingHistoryTable.getColumnCount(); i++) {
+            html.write("<th>"  + model.getColumnName(i) + "</th>");
+        }
+
+        html.write("</tr>");
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            html.write("<tr>");
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                html.write("<td>" + model.getValueAt(i,j).toString() + "</td>");
+            }
+            html.write("</tr>");
+        }
+
+        html.write("</table></html>");
+        html.close();
+
+
+
     }
 
     public void readBorrowingHistoryFromXML(File file) throws IOException, SQLException {
@@ -899,6 +944,7 @@ public class MainProgram extends JFrame {
             e.printStackTrace();
         }
     }
+
 
     public void displayLoginPanel() {
         rootPanel.removeAll();
