@@ -454,7 +454,7 @@ public class MainProgram extends JFrame {
                 try {
 
                     if(searchAttribute.equals("Title")) {
-                        loadBooksFromList(BookService.searchBookByTitle(keyWord));
+                        loadBooksFromList(BookService.searchBookByTitleKeyWord(keyWord));
                     } else {
                         loadBooksFromList(BookService.searchBookByAuthor(keyWord));
                     }

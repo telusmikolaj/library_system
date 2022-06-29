@@ -28,7 +28,7 @@ public class BookService {
                 int availbility = resultSet.getInt("availbility");
                 int numberOfBorrows = resultSet.getInt("borrows_number");
 
-                Book book = new Book(bookId, title, author,genre,pages, publisher, availbility, numberOfBorrows );
+                Book book = new Book(bookId, title, author, genre, pages, publisher, availbility, numberOfBorrows);
                 booksList.add(book);
             }
         }
@@ -39,7 +39,9 @@ public class BookService {
     public static int insertBook(Book book) throws SQLException {
         String addBookQuery = "INSERT INTO book (title, publisher, author, availbility, genre, pages) VALUES (?,?,?,?,?,?);";
         try (Connection conn = DBService.open();
-             PreparedStatement ps = conn.prepareStatement(addBookQuery)) {
+             PreparedStatement ps = conn.prepareStatement(addBookQuery);) {
+
+
             ps.setString(1, book.getTitle());
             ps.setString(2, book.getPublisher());
             ps.setString(3, book.getAuthor());
@@ -105,15 +107,14 @@ public class BookService {
         }
 
 
-
     }
 
-    public static List<Book> searchBookByTitle(String titleKeyWord) throws SQLException {
+    public static List<Book> searchBookByTitleKeyWord(String titleKeyWord) throws SQLException {
         List<Book> booksList = new ArrayList<>();
 
         String searchBookByKeywordQuery = "SELECT * FROM book WHERE title LIKE ?";
         try (Connection conn = DBService.open();
-             PreparedStatement ps = conn.prepareStatement(searchBookByKeywordQuery); ) {
+             PreparedStatement ps = conn.prepareStatement(searchBookByKeywordQuery);) {
 
             ps.setString(1, "%" + titleKeyWord + "%");
 
@@ -143,7 +144,7 @@ public class BookService {
 
         String searchBookByKeywordQuery = "SELECT * FROM book WHERE author LIKE ?";
         try (Connection conn = DBService.open();
-             PreparedStatement ps = conn.prepareStatement(searchBookByKeywordQuery); ) {
+             PreparedStatement ps = conn.prepareStatement(searchBookByKeywordQuery);) {
 
             ps.setString(1, "%" + authorKeyWord + "%");
 
@@ -177,7 +178,7 @@ public class BookService {
 
             try (ResultSet rs = ps.executeQuery()) {
 
-                if(rs.next()) {
+                if (rs.next()) {
                     book = new Book(rs.getInt("id"),
                             rs.getString("title"),
                             rs.getString("author"),
@@ -204,7 +205,7 @@ public class BookService {
         try (Connection conn = DBService.open();
              PreparedStatement ps = conn.prepareStatement(setAvailbilityQuery)) {
 
-            ps.setInt(1,book.getAvailbility());
+            ps.setInt(1, book.getAvailbility());
             ps.setInt(2, book.getId());
             return ps.executeUpdate();
         } catch (SQLException e) {
@@ -219,8 +220,8 @@ public class BookService {
         try (Connection conn = DBService.open();
              PreparedStatement stmt = conn.prepareStatement(increaseNumOfBorrowsQuery)) {
 
-            stmt.setInt(1,book.getNumOfBorrows());
-            stmt.setInt(2,book.getId());
+            stmt.setInt(1, book.getNumOfBorrows());
+            stmt.setInt(2, book.getId());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -249,7 +250,7 @@ public class BookService {
                 int availbility = resultSet.getInt("availbility");
                 int numberOfBorrows = resultSet.getInt("borrows_number");
 
-                Book book = new Book(bookId, title, author,genre,pages, publisher, availbility, numberOfBorrows );
+                Book book = new Book(bookId, title, author, genre, pages, publisher, availbility, numberOfBorrows);
                 booksList.add(book);
             }
         }
@@ -268,7 +269,7 @@ public class BookService {
 
             try (ResultSet rs = ps.executeQuery()) {
 
-                while(rs.next()) {
+                while (rs.next()) {
                     Book book = new Book(rs.getInt("id"),
                             rs.getString("title"),
                             rs.getString("author"),
@@ -291,6 +292,34 @@ public class BookService {
         return booksList;
     }
 
+    public static Book searchBookByTitle(String title) throws SQLException {
+        Book book = null;
+        String findBookByTitleQuery = "SELECT * FROM book WHERE title= ?";
+        try (Connection c = DBService.open();
+             PreparedStatement ps = c.prepareStatement(findBookByTitleQuery)) {
+            ps.setString(1, title);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                if (rs.next()) {
+                    book = new Book(rs.getInt("id"),
+                            rs.getString("title"),
+                            rs.getString("author"),
+                            rs.getString("genre"),
+                            rs.getString("pages"),
+                            rs.getString("publisher"),
+                            rs.getInt("availbility"),
+                            rs.getInt("borrows_number"));
+                }
+
+            } catch (SQLException e) {
+                System.out.println("Cannot find a book");
+            }
+
+        }
+
+        return book;
 
 
+    }
 }
