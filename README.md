@@ -1,5 +1,5 @@
 # Library Managment System
-> Library Managment system with database.
+> Library Managment system using Swing and JDBC.
 
 ## Table of Contents
 * [General Info](#general-information)
