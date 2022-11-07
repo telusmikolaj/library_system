@@ -7,7 +7,9 @@ import com.company.model.User;
 import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BookService {
 
@@ -320,6 +322,55 @@ public class BookService {
 
         return book;
 
+
+    }
+
+    public static List<Book> getMostReadedBooksForChart() throws SQLException {
+
+        List<Book> booksList = new ArrayList<>();
+        String selectMostReadedBooksQuery = "SELECT * FROM book ORDER BY borrows_number  DESC LIMIT 6";
+
+        try (Connection conn = DBService.open();
+             Statement st = conn.createStatement();
+             ResultSet resultSet = st.executeQuery(selectMostReadedBooksQuery)) {
+            while (resultSet.next()) {
+                int bookId = resultSet.getInt("id");
+
+                String title = resultSet.getString("title");
+                String publisher = resultSet.getString("publisher");
+                String author = resultSet.getString("author");
+                String genre = resultSet.getString("genre");
+                String pages = resultSet.getString("pages");
+                int availbility = resultSet.getInt("availbility");
+                int numberOfBorrows = resultSet.getInt("borrows_number");
+
+                Book book = new Book(bookId, title, author, genre, pages, publisher, availbility, numberOfBorrows);
+                booksList.add(book);
+            }
+        }
+
+        return booksList;
+
+    }
+
+    public static Map<String, Integer> getMostReadedAuthorsForChart() throws SQLException {
+
+        String selectMostReadedAuthor = "SELECT *, SUM(borrows_number) AS total_borrows FROM book GROUP BY author ORDER BY SUM(borrows_number) DESC LIMIT 3;";
+        Map<String, Integer> topAuthorMap = new HashMap<>();
+
+        try (Connection conn = DBService.open();
+             Statement st = conn.createStatement();
+             ResultSet resultSet = st.executeQuery(selectMostReadedAuthor)) {
+            while (resultSet.next()) {
+                String author = resultSet.getString("author");
+                int totalNumOfBorrows = resultSet.getInt("total_borrows");
+
+                System.out.println(author);
+                topAuthorMap.put(author, totalNumOfBorrows);
+            }
+        }
+
+        return topAuthorMap;
 
     }
 }

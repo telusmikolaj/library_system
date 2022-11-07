@@ -5,11 +5,9 @@ import com.company.model.BorrowingHistory;
 import com.company.model.BorrowingHistoryList;
 import com.company.model.User;
 import com.company.service.*;
-import com.company.view.BookTableModel;
-import com.company.view.BorrowingHistoryTableModel;
-import com.company.view.LibrarianTableModel;
-import com.company.view.UserTableModel;
+import com.company.view.*;
 import com.thoughtworks.xstream.XStream;
+import org.jfree.chart.ChartPanel;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -126,6 +124,9 @@ public class MainProgram extends JFrame {
     private JButton exportToXMLButton;
     private JButton loadBorrowingHistoryFromXMLBTN;
     private JButton exportBorrowingHistoryToHTML;
+    private JButton bookPopularityChart;
+    private JButton topAuthorChartButton;
+    private HistogramPanel histogramPanel;
 
     private List<User> usersList;
     private List<Book> bookList;
@@ -135,10 +136,7 @@ public class MainProgram extends JFrame {
 
     public MainProgram() throws SQLException {
         cardLayout = (CardLayout) (adminCardsPanel.getLayout());
-        System.out.println(adminCardsPanel);
 
-
-        System.out.println(borrowingHistoryTable.toString());
         loadLibrariansTable();
         loadUserTable();
         loadAllBooks();
@@ -701,6 +699,29 @@ public class MainProgram extends JFrame {
                 }
             }
         });
+        bookPopularityChart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+
+                    new HistogramPanel().display();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        topAuthorChartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    new AuthorPieChart().display();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        });
     }
 
     public Book getSelectedBook() {
@@ -990,6 +1011,8 @@ public class MainProgram extends JFrame {
 
         public static void main (String[]args){
 
+
+
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     MainProgram mp = null;
@@ -998,6 +1021,7 @@ public class MainProgram extends JFrame {
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
+
                     mp.setContentPane(mp.rootPanel);
                     mp.pack();
                     mp.setLocationRelativeTo(null);

@@ -6,7 +6,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 public class BookTableModel extends AbstractTableModel {
-    private final String[] COLUMNS = {"ID", "Title", "Author","Genre", "Pages", "Publisher", "Availability"};
+    private final String[] COLUMNS = {"ID", "Title", "Author","Genre", "Pages", "Publisher", "Availability", "Number of borrows"};
     private List<Book> bookList;
 
 
@@ -34,7 +34,7 @@ public class BookTableModel extends AbstractTableModel {
             case 4 -> bookList.get(rowIndex).getPublisher();
             case 5 -> bookList.get(rowIndex).getPages();
             case 6 -> bookList.get(rowIndex).getAvailbility();
-            //case 7 -> bookList.get(rowIndex).getNumOfBorrows();
+            case 7 -> bookList.get(rowIndex).getNumOfBorrows();
             default -> "-";
         };
     }
@@ -69,7 +69,7 @@ public class BookTableModel extends AbstractTableModel {
             case 4 -> bookList.get(rowIndex).setPublisher((String) aValue);
             case 5 -> bookList.get(rowIndex).setPages((String) aValue);
             case 6 -> bookList.get(rowIndex).setAvailbility((Integer) aValue);
-            //case 7 -> bookList.get(rowIndex).setNumOfBorrows((Integer) aValue);
+            case 7 -> bookList.get(rowIndex).setNumOfBorrows((Integer) aValue);
         };
     }
 

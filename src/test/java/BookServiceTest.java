@@ -19,6 +19,7 @@ public class BookServiceTest {
 
         book.setAvailbility(1);
         BookService.insertBook(book);
+        Book bookFromDB = BookService.searchBookByTitle(book.getTitle());
 
         Assert.assertTrue(BookService.isBookAvailable(bookFromDB.getId()));
 
